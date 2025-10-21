@@ -11,7 +11,10 @@ public class Indexer {
     float pos1 = 0.0f;
     float pos2 = 0.0f;
     float pos3 = 0.0f;
-    Telemetry telemetry;
+    float pos4 = 0.0f;
+    float pos5 = 0.0f;
+    float pos6 = 0.0f;
+    private Telemetry telemetry;
 
     public Indexer(Servo servo){
         this.servo = servo;
@@ -20,10 +23,15 @@ public class Indexer {
     public enum POS_STATE {
         POS1,
         POS2,
-        POS3
+        POS3,
+        POS4,
+        POS5,
+        POS6
     }
 
     public POS_STATE posState = POS_STATE.POS1;
+
+    public double getServoPosition(){return servo.getPosition();}
 
     public void moveToPos1(){
         servo.setPosition(pos1);
@@ -42,6 +50,26 @@ public class Indexer {
     public void moveToPos3(){
         servo.setPosition(pos3);
         posState = POS_STATE.POS3;
+        telemetry.addData("Position", posState);
+        telemetry.update();
+    }
+    public void moveToPos4(){
+        servo.setPosition(pos4);
+        posState = POS_STATE.POS4;
+        telemetry.addData("Position", posState);
+        telemetry.update();
+    }
+
+    public void moveToPos5(){
+        servo.setPosition(pos5);
+        posState = POS_STATE.POS5;
+        telemetry.addData("Position", posState);
+        telemetry.update();
+    }
+
+    public void moveToPos6(){
+        servo.setPosition(pos6);
+        posState = POS_STATE.POS6;
         telemetry.addData("Position", posState);
         telemetry.update();
     }

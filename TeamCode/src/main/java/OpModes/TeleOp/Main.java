@@ -14,16 +14,21 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import Components.ButtonHandler;
 import Components.Drive;
+import Components.Indexer;
 import Util.Vector2;
 
 @TeleOp(name="Main", group="TeleOp")
 public class Main extends OpMode {
     Drive drive;
+    Indexer indexer;
     DcMotorEx frontLeftMotor;
     DcMotorEx backLeftMotor;
     DcMotorEx frontRightMotor;
     DcMotorEx backRightMotor;
+    DcMotorEx intakeMotor;
+    Servo indexerRot;
     IMU imu;
+    ButtonHandler intakeToggle;
 
     @Override
     public void init() {
@@ -32,8 +37,11 @@ public class Main extends OpMode {
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "backRightMotor");
+        indexerRot = hardwareMap.get(Servo.class, "indexerRot");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
 
         drive = new Drive(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, imu);
+        indexer = new Indexer(indexerRot);
 
         backRightMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -45,7 +53,7 @@ public class Main extends OpMode {
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        ButtonHandler turnOffGamepadOne = new ButtonHandler(false);
+        intakeToggle = new ButtonHandler(false);
 
 
         telemetry.addData("Status:", "Initialized");
@@ -57,6 +65,9 @@ public class Main extends OpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
 
+            telemetry.addData("Indexer position", indexer.getServoPosition());
+            telemetry.update();
+
             if (!gamepad2.y) {
                 telemetry.addData("Main drive enabled", (!gamepad2.y));
                 telemetry.update();
@@ -65,9 +76,16 @@ public class Main extends OpMode {
                 drive.moveInDirection(driveDirection, driveRotation, 1.0f);
             }
 
+            intakeToggle.update(gamepad2.a);
+
+            if(intakeToggle.getValue()){
+                intakeMotor.setPower(1);
+            }
+
             Vector2 preciseDirection = new Vector2(-gamepad2.left_stick_y, gamepad2.left_stick_x);
             float preciseRotation = gamepad2.right_stick_x * 0.6f;
             drive.moveInDirection(preciseDirection, preciseRotation, 1.0f);
+
 
     }
 }
