@@ -26,9 +26,11 @@ public class Main extends OpMode {
     DcMotorEx frontRightMotor;
     DcMotorEx backRightMotor;
     DcMotorEx intakeMotor;
+    DcMotorEx shooterMotor;
     Servo indexerRot;
     IMU imu;
     ButtonHandler intakeToggle;
+    ButtonHandler shooterToggle;
 
     @Override
     public void init() {
@@ -39,6 +41,7 @@ public class Main extends OpMode {
         backRightMotor = hardwareMap.get(DcMotorEx.class, "backRightMotor");
         indexerRot = hardwareMap.get(Servo.class, "indexerRot");
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
 
         drive = new Drive(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, imu);
         indexer = new Indexer(indexerRot);
@@ -54,6 +57,7 @@ public class Main extends OpMode {
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intakeToggle = new ButtonHandler(false);
+        shooterToggle = new ButtonHandler(true);
 
 
         telemetry.addData("Status:", "Initialized");
@@ -69,8 +73,6 @@ public class Main extends OpMode {
             telemetry.update();
 
             if (!gamepad2.y) {
-                telemetry.addData("Main drive enabled", (!gamepad2.y));
-                telemetry.update();
                 Vector2 driveDirection = new Vector2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
                 float driveRotation = gamepad1.right_stick_x;
                 drive.moveInDirection(driveDirection, driveRotation, 1.0f);
@@ -80,6 +82,12 @@ public class Main extends OpMode {
 
             if(intakeToggle.getValue()){
                 intakeMotor.setPower(1);
+            }
+
+            shooterToggle.update(gamepad2.b);
+
+            if (shooterToggle.getValue()){
+                shooterMotor.setPower(1);
             }
 
             Vector2 preciseDirection = new Vector2(-gamepad2.left_stick_y, gamepad2.left_stick_x);

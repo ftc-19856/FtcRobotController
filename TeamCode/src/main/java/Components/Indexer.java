@@ -9,12 +9,13 @@ public class Indexer {
 
     Servo servo;
     float pos1 = 0.0f;
-    float pos2 = 0.0f;
-    float pos3 = 0.0f;
-    float pos4 = 0.0f;
-    float pos5 = 0.0f;
-    float pos6 = 0.0f;
+    float pos2 = 1f/30;
+    float pos3 = 2f/30;
+    float pos4 = 3f/30;
+    float pos5 = 4f/30;
+    float pos6 = 5f/30;
     private Telemetry telemetry;
+    private double servoPosition = 0;
 
     public Indexer(Servo servo){
         this.servo = servo;
@@ -72,5 +73,17 @@ public class Indexer {
         posState = POS_STATE.POS6;
         telemetry.addData("Position", posState);
         telemetry.update();
+    }
+
+    public void moveUp(){
+        servoPosition += 1;
+        servoPosition %= 6;
+        servo.setPosition(servoPosition/30);
+    }
+
+    public void moveDown(){
+        servoPosition -= 1;
+        servoPosition %= 6;
+        servo.setPosition(servoPosition/30);
     }
 }
