@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Indexer {
 
-    Servo servo;
+    Servo rotationServo;
     float pos1 = 0.0f;
     float pos2 = 1f/30;
     float pos3 = 2f/30;
@@ -17,8 +17,8 @@ public class Indexer {
     private Telemetry telemetry;
     private double servoPosition = 0;
 
-    public Indexer(Servo servo){
-        this.servo = servo;
+    public Indexer(Servo rotation){
+        this.rotationServo = rotation;
     }
 
     public enum POS_STATE {
@@ -32,9 +32,9 @@ public class Indexer {
 
     public POS_STATE posState = POS_STATE.POS1;
 
-    public double getServoPosition(){return servo.getPosition();}
+    public double getServoPosition(){return rotationServo.getPosition();}
 
-    public void moveToPos1(){
+ /*   public void moveToPos1(){
         servo.setPosition(pos1);
         posState = POS_STATE.POS1;
         telemetry.addData("Position", posState);
@@ -73,17 +73,17 @@ public class Indexer {
         posState = POS_STATE.POS6;
         telemetry.addData("Position", posState);
         telemetry.update();
-    }
+    } */
 
     public void moveUp(){
         servoPosition += 1;
         servoPosition %= 6;
-        servo.setPosition(servoPosition/30);
+        rotationServo.setPosition(servoPosition/30);
     }
 
     public void moveDown(){
         servoPosition -= 1;
         servoPosition %= 6;
-        servo.setPosition(servoPosition/30);
+        rotationServo.setPosition(servoPosition/30);
     }
 }

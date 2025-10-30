@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
-import Components.ButtonHandler;
+import Components.Toggle;
 import Components.Drive;
 import Components.Indexer;
 import Util.Vector2;
@@ -29,8 +29,8 @@ public class Main extends OpMode {
     DcMotorEx shooterMotor;
     Servo indexerRot;
     IMU imu;
-    ButtonHandler intakeToggle;
-    ButtonHandler shooterToggle;
+    Toggle intakeToggle;
+    Toggle shooterToggle;
 
     @Override
     public void init() {
@@ -56,8 +56,8 @@ public class Main extends OpMode {
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intakeToggle = new ButtonHandler(false);
-        shooterToggle = new ButtonHandler(true);
+        intakeToggle = new Toggle(false);
+        shooterToggle = new Toggle(true);
 
 
         telemetry.addData("Status:", "Initialized");
@@ -80,14 +80,22 @@ public class Main extends OpMode {
 
             intakeToggle.update(gamepad2.a);
 
-            if(intakeToggle.getValue()){
+            if(intakeToggle.getState()){
                 intakeMotor.setPower(1);
             }
 
             shooterToggle.update(gamepad2.b);
 
-            if (shooterToggle.getValue()){
+            if (shooterToggle.getState()){
                 shooterMotor.setPower(1);
+            }
+
+            if(gamepad2.dpad_up){
+                indexer.moveUp();
+            }
+
+            if(gamepad2.dpad_down){
+                indexer.moveDown();
             }
 
             Vector2 preciseDirection = new Vector2(-gamepad2.left_stick_y, gamepad2.left_stick_x);
