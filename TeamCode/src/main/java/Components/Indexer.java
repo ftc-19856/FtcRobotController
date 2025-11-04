@@ -16,6 +16,7 @@ public class Indexer {
     float pos6 = 5f/30;
     private Telemetry telemetry;
     private double servoPosition = 0;
+    private float servoStartConstant = 12.0f;
 
     public Indexer(Servo rotation){
         this.rotationServo = rotation;
@@ -32,7 +33,8 @@ public class Indexer {
 
     public POS_STATE posState = POS_STATE.POS1;
 
-    public double getServoPosition(){return rotationServo.getPosition();}
+    public double getServoPosition(){return servoPosition;}
+
 
  /*   public void moveToPos1(){
         servo.setPosition(pos1);
@@ -75,15 +77,29 @@ public class Indexer {
         telemetry.update();
     } */
 
+
     public void moveUp(){
         servoPosition += 1;
         servoPosition %= 6;
-        rotationServo.setPosition(servoPosition/30);
+        float offset = 0;
+        if(servoPosition == 1 || servoPosition == 3 || servoPosition == 5){
+            offset -= 0.3f;
+        }
+        rotationServo.setPosition((servoPosition+servoStartConstant+offset)/30);
     }
 
     public void moveDown(){
-        servoPosition -= 1;
+        servoPosition += 5;
         servoPosition %= 6;
-        rotationServo.setPosition(servoPosition/30);
+        float offset = 0;
+        if(servoPosition == 1 || servoPosition == 3 || servoPosition == 5){
+            offset -= 0.3f;
+        }
+        rotationServo.setPosition((servoPosition+servoStartConstant+offset)/30);
+
     }
+
+    public void init(){rotationServo.setPosition((servoPosition+servoStartConstant)/30);}
+
+
 }
