@@ -62,10 +62,6 @@ public class Main extends OpMode {
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //intakeToggle = new Toggle(false);
         shooterToggle = new Toggle(false);
@@ -83,20 +79,11 @@ public class Main extends OpMode {
 
             telemetry.addData("Indexer position", indexer.getServoPosition());
 
-                Vector2 driveDirection = new Vector2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
-                float driveRotation = gamepad1.right_stick_x;
-                drive.moveInDirection(driveDirection, driveRotation, 1.0f);
+                Vector2 driveDirection = new Vector2(-gamepad2.left_stick_y, gamepad2.left_stick_x);
+                float driveRotation = gamepad2.right_stick_x;
+                drive.moveInDirection(driveDirection, driveRotation, 1.0f, telemetry);
 
-            //intakeToggle.update(gamepad2.a);
 
-            /*if(intakeToggle.getState()){
-                intakeMotor.setPower(-1);
-            }
-            else {
-                intakeMotor.setPower(0);
-            }*/
-
-            //telemetry.addData("Intake toggle", intakeToggle.getState());
             if (indexer.getServoPosition() == 0 || indexer.getServoPosition() == 2 || indexer.getServoPosition() == 4){
                 intakeMotor.setPower(-1);
             }
@@ -113,12 +100,6 @@ public class Main extends OpMode {
 
             shooterToggle.update(gamepad2.b);
 
-            if (shooterToggle.getState()){
-                shooterMotor.setPower(1);
-            }
-            else {
-                shooterMotor.setPower(0);
-            }
 
             telemetry.addData("Shooter toggle", shooterToggle.getState());
 
@@ -138,13 +119,22 @@ public class Main extends OpMode {
             lastDpad_DownState = gamepad2.dpad_down;
             telemetry.addData("lastDpadDown", lastDpad_DownState);
 
+            if (indexer.getServoPosition() == 1 || indexer.getServoPosition() == 3 || indexer.getServoPosition() == 5){
+
+                if (shooterToggle.getState()){
+                    shooterMotor.setPower(1);
+                }
+            }
+
+            if(!shooterToggle.getState()){
+                shooterMotor.setPower(0);
+            }
+
             telemetry.addData("Indexer servo pos", indexer.getServoPosition());
 
             telemetry.update();
 
-            Vector2 preciseDirection = new Vector2(-gamepad2.left_stick_y, gamepad2.left_stick_x);
-            float preciseRotation = gamepad2.right_stick_x;
-            drive.moveInDirection(preciseDirection, preciseRotation, 1.0f);
+
 
     }
 }
