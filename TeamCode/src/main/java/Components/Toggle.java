@@ -17,7 +17,7 @@ package Components;
  */
 public class Toggle {
 
-    private boolean currentState = false;   // The current ON/OFF toggle value
+    private boolean currentState;   // The current ON/OFF toggle value
     private boolean lastButtonState = false; // The previous raw button input
 
 

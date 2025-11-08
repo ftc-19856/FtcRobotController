@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -31,7 +32,7 @@ public class Drive {
         this.backRightMotor = backRightMotor;
         this.imu = imu;
 
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -84,7 +85,7 @@ public class Drive {
     }
 
     // speed is from 0 to 1
-    public void moveInDirection(Vector2 direction, float rotation, float speed) {
+    public void moveInDirection(Vector2 direction, float rotation, float speed, Telemetry telemetry) {
         float rx = rotation * speed;
 
         double fieldRotation = imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.RADIANS);
@@ -112,6 +113,13 @@ public class Drive {
             backRightPower /= maxPower;
         }
 
+        telemetry.addData("Front Right Pwr", frontRightPower);
+        telemetry.addData("Front Left Pwr", frontLeftPower);
+        telemetry.addData("Back Right Pwr", backRightPower);
+        telemetry.addData("Back Left Pwr", backLeftPower);
+        telemetry.addData("Max pwr value", maxPower);
+        telemetry.addData("Dir x", direction.x);
+        telemetry.addData("Dir y", direction.y);
         // Set motor powers
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
