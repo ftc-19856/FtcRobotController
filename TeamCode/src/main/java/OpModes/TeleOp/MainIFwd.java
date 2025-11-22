@@ -1,16 +1,11 @@
 package OpModes.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 import Components.Toggle;
@@ -18,8 +13,8 @@ import Components.Drive;
 import Components.Indexer;
 import Util.Vector2;
 
-@TeleOp(name="Main", group="TeleOp")
-public class Main extends OpMode {
+@TeleOp(name="MainIFwd", group="TeleOp")
+public class MainIFwd extends OpMode {
     Drive drive;
     Indexer indexer;
     DcMotorEx frontLeftMotor;
@@ -101,7 +96,7 @@ public class Main extends OpMode {
             shooterToggle.update(gamepad2.b);
 
 
-            telemetry.addData("Shooter toggle", shooterToggle.getState());
+            telemetry.addData("ShootingPedro toggle", shooterToggle.getState());
 
             if(gamepad2.dpad_up && !lastDpad_UpState){
                 indexer.moveUp();
