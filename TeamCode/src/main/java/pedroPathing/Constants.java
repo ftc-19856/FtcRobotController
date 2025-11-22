@@ -43,7 +43,7 @@ public class Constants {
             .strafeTicksToInches(.002)
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                            RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
 
     @Override
     public boolean equals(@Nullable Object obj) {

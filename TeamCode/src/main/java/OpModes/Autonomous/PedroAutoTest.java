@@ -3,12 +3,13 @@ package OpModes.Autonomous; // make sure this aligns with class location
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
+import Components.ShootingPedro;
 import pedroPathing.Constants;
 
 @Autonomous(name = "PedroAutoTest")
@@ -17,23 +18,30 @@ public class PedroAutoTest extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
+    private DcMotor shooterMotor;
+
     private int pathState;
 
-    private final Pose startPose = new Pose(38.6, 33.2, Math.toRadians(0));
-    private final Pose endPose = new Pose(105, 33.2, Math.toRadians(180));
+    private ShootingPedro shooter = new ShootingPedro(shooterMotor);
 
-    private Path initialMove;
+    private final Pose startPose = new Pose(33.3, 134.5, Math.toRadians(90));
+    private final Pose shootPose = new Pose(66, 78, Math.toRadians(130));
+
+    private PathChain scorePreload;
 
     public void buildPaths() {
 
-        initialMove = new Path(new BezierLine(startPose, endPose));
-        initialMove.setLinearHeadingInterpolation(startPose.getHeading(), endPose.getHeading());
+        scorePreload = follower.pathBuilder()
+                .addPath(new BezierLine(startPose, shootPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+                .addParametricCallback(1.0, shooter)
+                .build();
     }
 
     public void autonomousPathUpdate(){
         switch (pathState){
             case 0:
-                follower.followPath(initialMove);
+                follower.followPath(scorePreload);
                 setPathState(1);
                 break;
 
@@ -69,6 +77,7 @@ public class PedroAutoTest extends OpMode {
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
+        shooterMotor = hardwareMap.get(DcMotor.class, "shooterMotor");
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
