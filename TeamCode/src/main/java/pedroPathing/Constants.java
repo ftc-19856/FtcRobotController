@@ -36,10 +36,10 @@ public class Constants {
             .forwardEncoder_HardwareMapName("backLeftMotor")
             .strafeEncoder_HardwareMapName("frontLeftMotor")
             .IMU_HardwareMapName("imu")
-            .forwardPodY(6)
-            .strafePodX(-7.5)
+            .forwardPodY(6.5)
+            .strafePodX(-6.5)
             .forwardEncoderDirection(Encoder.REVERSE)
-            .forwardTicksToInches(.002)
+            .forwardTicksToInches(.00199)
             .strafeTicksToInches(.002)
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,

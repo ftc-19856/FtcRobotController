@@ -18,14 +18,16 @@ public class PedroAutoTest extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
-    private DcMotor shooterMotor;
+    private DcMotor shooterMotorOne;
+    private DcMotor shooterMotorTwo;
+    private DcMotor beltMotor;
 
     private int pathState;
 
-    private ShootingPedro shooter = new ShootingPedro(shooterMotor);
+    private ShootingPedro shoot = new ShootingPedro(shooterMotorOne, shooterMotorTwo, beltMotor);
 
     private final Pose startPose = new Pose(33.3, 134.5, Math.toRadians(90));
-    private final Pose shootPose = new Pose(66, 78, Math.toRadians(130));
+    private final Pose shootPose = new Pose(23, 124, Math.toRadians(143));
 
     private PathChain scorePreload;
 
@@ -34,7 +36,7 @@ public class PedroAutoTest extends OpMode {
         scorePreload = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
-                .addParametricCallback(1.0, shooter)
+                .addParametricCallback(1, shoot)
                 .build();
     }
 
@@ -77,7 +79,9 @@ public class PedroAutoTest extends OpMode {
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
-        shooterMotor = hardwareMap.get(DcMotor.class, "shooterMotor");
+        shooterMotorOne = hardwareMap.get(DcMotor.class, "shooterMotorOne");
+        shooterMotorTwo = hardwareMap.get(DcMotor.class, "shooterMotorTwo");
+        beltMotor = hardwareMap.get(DcMotor.class, "beltMotor");
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();

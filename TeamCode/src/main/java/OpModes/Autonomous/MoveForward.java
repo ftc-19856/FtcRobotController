@@ -34,10 +34,10 @@ public class MoveForward extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            frontLeftMotor.setPower(.1);
-            backLeftMotor.setPower(.1);
-            frontRightMotor.setPower(.1);
-            backRightMotor.setPower(.1);
+            frontLeftMotor.setPower(.3);
+            backLeftMotor.setPower(.3);
+            frontRightMotor.setPower(.3);
+            backRightMotor.setPower(.3);
         }
     }
 }
