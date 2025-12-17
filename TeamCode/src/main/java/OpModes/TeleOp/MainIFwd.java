@@ -84,6 +84,14 @@ public class MainIFwd extends OpMode {
             if(gamepad2.y){
                 beltMotor.setPower(1);
             }
+            else if(gamepad2.a){
+                shooterMotorOne.setPower(-.6);
+                shooterMotorTwo.setPower(-.6);
+                beltMotor.setPower(-.6);
+            }
+            else {
+                beltMotor.setPower(0);
+            }
 
             if (shooterToggle.getState()){
                 shooterMotorOne.setPower(1);
@@ -95,10 +103,7 @@ public class MainIFwd extends OpMode {
                 shooterMotorTwo.setPower(0);
             }
 
-            if(gamepad2.a){
-                shooterMotorOne.setPower(-.3);
-                shooterMotorTwo.setPower(-.3);
-            }
+
 
 
 
