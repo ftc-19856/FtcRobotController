@@ -16,18 +16,16 @@ import Util.Vector2;
 @TeleOp(name="MainIFwd", group="TeleOp")
 public class MainIFwd extends OpMode {
     Drive drive;
-    Indexer indexer;
     DcMotorEx frontLeftMotor;
     DcMotorEx backLeftMotor;
     DcMotorEx frontRightMotor;
     DcMotorEx backRightMotor;
-    DcMotorEx intakeMotor;
-    DcMotorEx shooterMotor;
-    Servo indexerRot;
-    Servo kicker;
+    DcMotorEx beltMotor;
+    DcMotorEx shooterMotorOne;
+    DcMotorEx shooterMotorTwo;
     IMU imu;
-    //Toggle intakeToggle;
     Toggle shooterToggle;
+    Toggle beltToggle;
 
     private boolean lastDpad_UpState;
     private boolean lastDpad_DownState;
@@ -39,13 +37,11 @@ public class MainIFwd extends OpMode {
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "backRightMotor");
-        indexerRot = hardwareMap.get(Servo.class, "indexerRot");
-        kicker = hardwareMap.get(Servo.class, "kicker");
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+        beltMotor = hardwareMap.get(DcMotorEx.class, "beltMotor");
+        shooterMotorOne = hardwareMap.get(DcMotorEx.class, "shooterMotorOne");
+        shooterMotorTwo = hardwareMap.get(DcMotorEx.class, "shooterMotorTwo");
 
         drive = new Drive(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, imu);
-        indexer = new Indexer(indexerRot);
 
         backRightMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -60,8 +56,7 @@ public class MainIFwd extends OpMode {
 
         //intakeToggle = new Toggle(false);
         shooterToggle = new Toggle(false);
-
-        indexer.init();
+        beltToggle = new Toggle(false);
 
 
         telemetry.addData("Status:", "Initialized");
@@ -72,60 +67,45 @@ public class MainIFwd extends OpMode {
     public void loop() {
             telemetry.addData("Status", "Running");
 
-            telemetry.addData("Indexer position", indexer.getServoPosition());
 
                 Vector2 driveDirection = new Vector2(-gamepad2.left_stick_y, gamepad2.left_stick_x);
                 float driveRotation = gamepad2.right_stick_x;
                 drive.moveInDirection(driveDirection, driveRotation, 1.0f, telemetry);
 
 
-            if (indexer.getServoPosition() == 0 || indexer.getServoPosition() == 2 || indexer.getServoPosition() == 4){
-                intakeMotor.setPower(-1);
-            }
-            else {
-                intakeMotor.setPower(0);
-            }
-
-            if (gamepad2.right_bumper){
-                kicker.setPosition(1);
-            }
-            else {
-                kicker.setPosition(0);
-            }
 
             shooterToggle.update(gamepad2.b);
+            beltToggle.update(gamepad2.y);
 
 
-            telemetry.addData("ShootingPedro toggle", shooterToggle.getState());
+            telemetry.addData("Shooting toggle", shooterToggle.getState());
 
-            if(gamepad2.dpad_up && !lastDpad_UpState){
-                indexer.moveUp();
+
+            if(gamepad2.y){
+                beltMotor.setPower(1);
+            }
+            else if(gamepad2.a){
+                shooterMotorOne.setPower(-.6);
+                shooterMotorTwo.setPower(-.6);
+                beltMotor.setPower(-.6);
+            }
+            else {
+                beltMotor.setPower(0);
             }
 
-            lastDpad_UpState = gamepad2.dpad_up;
-
-            telemetry.addData("lastDpadUp", lastDpad_UpState);
-
-
-            if(gamepad2.dpad_down && !lastDpad_DownState){
-                indexer.moveDown();
-            }
-
-            lastDpad_DownState = gamepad2.dpad_down;
-            telemetry.addData("lastDpadDown", lastDpad_DownState);
-
-            if (indexer.getServoPosition() == 1 || indexer.getServoPosition() == 3 || indexer.getServoPosition() == 5){
-
-                if (shooterToggle.getState()){
-                    shooterMotor.setPower(1);
-                }
+            if (shooterToggle.getState()){
+                shooterMotorOne.setPower(1);
+                shooterMotorTwo.setPower(1);
             }
 
             if(!shooterToggle.getState()){
-                shooterMotor.setPower(0);
+                shooterMotorOne.setPower(0);
+                shooterMotorTwo.setPower(0);
             }
 
-            telemetry.addData("Indexer servo pos", indexer.getServoPosition());
+
+
+
 
             telemetry.update();
 
