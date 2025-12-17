@@ -54,76 +54,62 @@ public class Drive {
         imu.resetYaw();
     }
 
-    // frontLeftPower, backLeftPower, frontRightPower, backRightMotor
-    public static double[] directionToMotorPower(Vector2 direction, float rotation) {
-        float rx = rotation;
+    private static double[] calculateMotorPowers(double x, double y, double rotation) {
+        double frontLeftPower = y + x + rotation;
+        double backLeftPower = y - x + rotation;
+        double frontRightPower = y - x - rotation;
+        double backRightPower = y + x - rotation;
 
-        double power = Math.hypot(direction.x, direction.y);
-        double inputAngle = Math.atan2(direction.y, direction.x);
+        double maxPower = Math.max(1.0,
+                Math.max(Math.abs(frontLeftPower),
+                        Math.max(Math.abs(backLeftPower),
+                                Math.max(Math.abs(frontRightPower), Math.abs(backRightPower)))));
 
-        double cos = Math.cos(inputAngle - Math.PI / 4);
-        double sin = Math.sin(inputAngle - Math.PI / 4);
-
-        double frontLeftPower = cos * power + rx;
-        double backLeftPower = sin * power - rx;
-        double frontRightPower = sin * -power - rx;
-        double backRightPower = cos * power - rx;
-
-        // Normalize motor powers
-        double maxPower = Math.max(Math.abs(frontLeftPower),
-                Math.max(Math.abs(backLeftPower),
-                        Math.max(Math.abs(frontRightPower), Math.abs(backRightPower))));
-
-        if (maxPower > 1.0) {
-            frontLeftPower /= maxPower;
-            backLeftPower /= maxPower;
-            frontRightPower /= maxPower;
-            backRightPower /= maxPower;
-        }
+        frontLeftPower /= maxPower;
+        backLeftPower /= maxPower;
+        frontRightPower /= maxPower;
+        backRightPower /= maxPower;
 
         return new double[]{frontLeftPower, backLeftPower, frontRightPower, backRightPower};
     }
 
+    // frontLeftPower, backLeftPower, frontRightPower, backRightMotor
+    public static double[] directionToMotorPower(Vector2 direction, float rotation) {
+        return calculateMotorPowers(direction.x, direction.y, rotation);
+    }
+
     // speed is from 0 to 1
     public void moveInDirection(Vector2 direction, float rotation, float speed, Telemetry telemetry) {
-        float rx = rotation * speed;
-
         double fieldRotation = imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.RADIANS);
 
-        double power = Math.hypot(direction.x, direction.y);
-        double inputAngle = Math.atan2(direction.y, direction.x) - (useFieldDirections ? fieldRotation : 0);
-
-        double cos = Math.cos(inputAngle - Math.PI / 4);
-        double sin = Math.sin(inputAngle - Math.PI / 4);
-
-        double frontLeftPower = cos * power * speed + rx;
-        double backLeftPower = sin * power * speed - rx;
-        double frontRightPower = sin * -power * speed - rx;
-        double backRightPower = cos * power * speed - rx;
-
-        // Normalize motor powers
-        double maxPower = Math.max(Math.abs(frontLeftPower),
-                Math.max(Math.abs(backLeftPower),
-                        Math.max(Math.abs(frontRightPower), Math.abs(backRightPower))));
-
-        if (maxPower > 1.0) {
-            frontLeftPower /= maxPower;
-            backLeftPower /= maxPower;
-            frontRightPower /= maxPower;
-            backRightPower /= maxPower;
+        double inputX = direction.x;
+        double inputY = direction.y;
+        if (useFieldDirections) {
+            double cos = Math.cos(fieldRotation);
+            double sin = Math.sin(fieldRotation);
+            double rotatedX = inputX * cos + inputY * sin;
+            double rotatedY = -inputX * sin + inputY * cos;
+            inputX = rotatedX;
+            inputY = rotatedY;
         }
 
-        telemetry.addData("Front Right Pwr", frontRightPower);
-        telemetry.addData("Front Left Pwr", frontLeftPower);
-        telemetry.addData("Back Right Pwr", backRightPower);
-        telemetry.addData("Back Left Pwr", backLeftPower);
-        telemetry.addData("Max pwr value", maxPower);
+        double[] powers = calculateMotorPowers(inputX * speed, inputY * speed, rotation * speed);
+
+        double maxReportedPower = Math.max(Math.abs(powers[0]),
+                Math.max(Math.abs(powers[1]),
+                        Math.max(Math.abs(powers[2]), Math.abs(powers[3]))));
+
+        telemetry.addData("Front Right Pwr", powers[2]);
+        telemetry.addData("Front Left Pwr", powers[0]);
+        telemetry.addData("Back Right Pwr", powers[3]);
+        telemetry.addData("Back Left Pwr", powers[1]);
+        telemetry.addData("Max pwr value", maxReportedPower);
         telemetry.addData("Dir x", direction.x);
         telemetry.addData("Dir y", direction.y);
         // Set motor powers
-        frontLeftMotor.setPower(frontLeftPower);
-        backLeftMotor.setPower(backLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        backRightMotor.setPower(backRightPower);
+        frontLeftMotor.setPower(powers[0]);
+        backLeftMotor.setPower(powers[1]);
+        frontRightMotor.setPower(powers[2]);
+        backRightMotor.setPower(powers[3]);
     }
 }
