@@ -21,8 +21,6 @@ public class Drive {
     public DcMotor backRightMotor = null;
     public boolean useFieldDirections = true;
 
-    private boolean lockRotation = false;
-    private double startRotation = 0;
     private IMU imu;
 
     public Drive(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, IMU imu) {
@@ -35,7 +33,7 @@ public class Drive {
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
@@ -56,8 +54,8 @@ public class Drive {
 
     private static double[] calculateMotorPowers(double x, double y, double rotation) {
         double frontLeftPower = y + x + rotation;
-        double backLeftPower = y - x + rotation;
-        double frontRightPower = y - x - rotation;
+        double backLeftPower = y - x - rotation;
+        double frontRightPower = y - x + rotation;
         double backRightPower = y + x - rotation;
 
         double maxPower = Math.max(1.0,
@@ -106,6 +104,9 @@ public class Drive {
         telemetry.addData("Max pwr value", maxReportedPower);
         telemetry.addData("Dir x", direction.x);
         telemetry.addData("Dir y", direction.y);
+        telemetry.addData("Rotation",rotation);
+        telemetry.addData("inX",inputX);
+        telemetry.addData("inY",inputY);
         // Set motor powers
         frontLeftMotor.setPower(powers[0]);
         backLeftMotor.setPower(powers[1]);
