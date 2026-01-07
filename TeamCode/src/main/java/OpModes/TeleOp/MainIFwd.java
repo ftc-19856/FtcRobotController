@@ -94,8 +94,8 @@ public class MainIFwd extends OpMode {
             }
 
             if (shooterToggle.getState()){
-                shooterMotorOne.setPower(0.285);
-                shooterMotorTwo.setPower(0.285);
+                shooterMotorOne.setPower(0.29);
+                shooterMotorTwo.setPower(0.29);
             }
 
             if(!shooterToggle.getState()){
