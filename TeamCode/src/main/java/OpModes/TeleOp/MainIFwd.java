@@ -68,34 +68,34 @@ public class MainIFwd extends OpMode {
             telemetry.addData("Status", "Running");
 
 
-                Vector2 driveDirection = new Vector2(gamepad2.left_stick_x, gamepad2.left_stick_y);
-                float driveRotation = gamepad2.right_stick_x;
+                Vector2 driveDirection = new Vector2(gamepad1.left_stick_x, gamepad1.left_stick_y);
+                float driveRotation = gamepad1.right_stick_x;
                 drive.moveInDirection(driveDirection, driveRotation, 1.0f, telemetry);
 
 
 
-            shooterToggle.update(gamepad2.b);
-            beltToggle.update(gamepad2.y);
+            shooterToggle.update(gamepad1.b);
+            beltToggle.update(gamepad1.y);
 
 
             telemetry.addData("Shooting toggle", shooterToggle.getState());
 
 
-            if(gamepad2.y){
-                beltMotor.setPower(.25);
+            if(gamepad1.y){
+                beltMotor.setPower(0.35);
             }
-            else if(gamepad2.a){
-                shooterMotorOne.setPower(-.6);
-                shooterMotorTwo.setPower(-.6);
-                beltMotor.setPower(-.6);
+            else if(gamepad1.a){
+                shooterMotorOne.setPower(-.7);
+                shooterMotorTwo.setPower(-.7);
+                beltMotor.setPower(-.3);
             }
             else {
                 beltMotor.setPower(0);
             }
 
             if (shooterToggle.getState()){
-                shooterMotorOne.setPower(0.4);
-                shooterMotorTwo.setPower(0.4);
+                shooterMotorOne.setPower(0.3);
+                shooterMotorTwo.setPower(0.3);
             }
 
             if(!shooterToggle.getState()){
