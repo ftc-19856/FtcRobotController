@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -27,6 +28,8 @@ public class MainIFwd extends OpMode {
     Toggle shooterToggle;
     Toggle beltToggle;
 
+    private final int SHOOTER_VELOCITY = 800;
+
     private boolean lastDpad_UpState;
     private boolean lastDpad_DownState;
 
@@ -47,11 +50,18 @@ public class MainIFwd extends OpMode {
         frontRightMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        shooterMotorOne.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterMotorTwo.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeftMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterMotorOne.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooterMotorTwo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        shooterMotorOne.setDirection(DcMotorEx.Direction.REVERSE);
+        shooterMotorTwo.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         //intakeToggle = new Toggle(false);
@@ -79,14 +89,18 @@ public class MainIFwd extends OpMode {
 
 
             telemetry.addData("Shooting toggle", shooterToggle.getState());
+            telemetry.addData("Shooter Motor 1 Ticks", shooterMotorOne.getVelocity());
+            telemetry.addData("Shooter Motor 2 Ticks", shooterMotorTwo.getVelocity());
 
 
             if(gamepad1.y){
-                beltMotor.setPower(0.35);
+                if (shooterMotorOne.getVelocity() >= 780 && shooterMotorTwo.getVelocity() >= 780) {
+                    beltMotor.setPower(0.35);
+                }
             }
             else if(gamepad1.a){
-                shooterMotorOne.setPower(-.7);
-                shooterMotorTwo.setPower(-.7);
+                shooterMotorOne.setVelocity(-800);
+                shooterMotorTwo.setVelocity(-800);
                 beltMotor.setPower(-.3);
             }
             else {
@@ -94,8 +108,8 @@ public class MainIFwd extends OpMode {
             }
 
             if (shooterToggle.getState()){
-                shooterMotorOne.setPower(0.3);
-                shooterMotorTwo.setPower(0.3);
+                shooterMotorOne.setVelocity(SHOOTER_VELOCITY);
+                shooterMotorTwo.setVelocity(SHOOTER_VELOCITY);
             }
 
             if(!shooterToggle.getState()){
