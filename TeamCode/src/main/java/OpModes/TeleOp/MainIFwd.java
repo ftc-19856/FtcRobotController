@@ -94,8 +94,11 @@ public class MainIFwd extends OpMode {
 
 
             if(gamepad1.y){
-                if (shooterMotorOne.getVelocity() >= 780 && shooterMotorTwo.getVelocity() >= 780) {
+                if (shooterMotorOne.getVelocity() >= 780 && shooterMotorOne.getVelocity() <=1000 && shooterMotorTwo.getVelocity() >= 780 && shooterMotorTwo.getVelocity() <=1000) {
                     beltMotor.setPower(0.35);
+                }
+                else {
+                beltMotor.setPower(0);
                 }
             }
             else if(gamepad1.a){
