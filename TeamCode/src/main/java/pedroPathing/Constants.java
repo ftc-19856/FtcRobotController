@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(2.7);
+            .mass(6.8);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
@@ -36,14 +36,14 @@ public class Constants {
             .forwardEncoder_HardwareMapName("backLeftMotor")
             .strafeEncoder_HardwareMapName("frontLeftMotor")
             .IMU_HardwareMapName("imu")
-            .forwardPodY(6.5)
-            .strafePodX(-6.5)
+            .forwardPodY(-6.5)
+            .strafePodX(6.5)
             .forwardEncoderDirection(Encoder.REVERSE)
             .forwardTicksToInches(.00199)
             .strafeTicksToInches(.002)
             .IMU_Orientation(
-                    new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                            RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                    new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                            RevHubOrientationOnRobot.UsbFacingDirection.UP));
 
     @Override
     public boolean equals(@Nullable Object obj) {
