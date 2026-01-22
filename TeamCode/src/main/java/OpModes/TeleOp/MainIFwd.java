@@ -24,11 +24,12 @@ public class MainIFwd extends OpMode {
     DcMotorEx beltMotor;
     DcMotorEx shooterMotorOne;
     DcMotorEx shooterMotorTwo;
+    DcMotorEx liftMotor;
     IMU imu;
     Toggle shooterToggle;
     Toggle beltToggle;
 
-    private final int SHOOTER_VELOCITY = 800;
+    private final int SHOOTER_VELOCITY = 700;
 
     private boolean lastDpad_UpState;
     private boolean lastDpad_DownState;
@@ -43,6 +44,7 @@ public class MainIFwd extends OpMode {
         beltMotor = hardwareMap.get(DcMotorEx.class, "beltMotor");
         shooterMotorOne = hardwareMap.get(DcMotorEx.class, "shooterMotorOne");
         shooterMotorTwo = hardwareMap.get(DcMotorEx.class, "shooterMotorTwo");
+        liftMotor = hardwareMap.get(DcMotorEx.class, "liftMotor");
 
         drive = new Drive(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, imu);
 
@@ -82,7 +84,7 @@ public class MainIFwd extends OpMode {
                 float driveRotation = gamepad1.right_stick_x;
                 drive.moveInDirection(driveDirection, driveRotation, 1.0f, telemetry);
 
-
+            telemetry.addData("Target Ticks", SHOOTER_VELOCITY);
 
             shooterToggle.update(gamepad1.b);
             beltToggle.update(gamepad1.y);
@@ -94,7 +96,7 @@ public class MainIFwd extends OpMode {
 
 
             if(gamepad1.y){
-                if (shooterMotorOne.getVelocity() >= 780 && shooterMotorOne.getVelocity() <=1000 && shooterMotorTwo.getVelocity() >= 780 && shooterMotorTwo.getVelocity() <=1000) {
+                if (shooterMotorOne.getVelocity() >= 680 && shooterMotorOne.getVelocity() <= 720 && shooterMotorTwo.getVelocity() >= 680 && shooterMotorTwo.getVelocity() <= 720) {
                     beltMotor.setPower(0.35);
                 }
                 else {
@@ -115,7 +117,17 @@ public class MainIFwd extends OpMode {
                 shooterMotorTwo.setVelocity(SHOOTER_VELOCITY);
             }
 
-            if(!shooterToggle.getState()){
+            if(gamepad1.dpad_up){
+                liftMotor.setPower(.5);
+            }
+            else if (gamepad1.dpad_down) {
+                liftMotor.setPower(-.5);
+            }
+            else{
+                liftMotor.setPower(0);
+            }
+
+        if(!shooterToggle.getState()){
                 shooterMotorOne.setPower(0);
                 shooterMotorTwo.setPower(0);
             }
