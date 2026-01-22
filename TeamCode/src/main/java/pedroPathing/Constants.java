@@ -22,15 +22,17 @@ public class Constants {
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .maxPower(1)
+            .maxPower(.2)
+            .xVelocity(63.44)
+            .yVelocity(53.1)
             .leftFrontMotorName("frontLeftMotor")
             .leftRearMotorName("backLeftMotor")
             .rightFrontMotorName("frontRightMotor")
             .rightRearMotorName("backRightMotor")
-            .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
-            .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorEx.Direction.FORWARD);
+            .leftFrontMotorDirection(DcMotorEx.Direction.FORWARD)
+            .leftRearMotorDirection(DcMotorEx.Direction.FORWARD)
+            .rightFrontMotorDirection(DcMotorEx.Direction.REVERSE)
+            .rightRearMotorDirection(DcMotorEx.Direction.REVERSE);
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
             .forwardEncoder_HardwareMapName("backLeftMotor")
@@ -40,7 +42,7 @@ public class Constants {
             .strafePodX(6.5)
             .forwardEncoderDirection(Encoder.REVERSE)
             .forwardTicksToInches(.00199)
-            .strafeTicksToInches(.002)
+            .strafeTicksToInches(.00199)
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                             RevHubOrientationOnRobot.UsbFacingDirection.UP));
